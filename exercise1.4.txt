@@ -1,0 +1,9 @@
+Exercise 1.4
+
+(defn a-plus-abs-b [a b]
+  (if (> b 0) + -) a b))
+
+Returns a + b if b > 0
+Returns a - b if b <= 0
+
+The if conditional is determining the operator

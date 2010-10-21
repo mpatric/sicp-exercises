@@ -1,0 +1,18 @@
+Exercise 1.6
+
+(defn square[x] (* x x))
+(defn abs[x] (if (< x 0.0) (- 0 x) x))
+(defn average [x y] (/ (+ x y) 2))
+
+(defn sqrt[x]  
+  (defn improve [guess x] (average guess (/ x guess)))
+  (defn good-enough? [guess x] (< (abs (- (square guess) x)) 0.001))
+  (loop [guess 1.0]
+    (if (good-enough? guess x)
+      guess
+      (recur (improve guess x)))))
+
+Answer:
+
+Very small numbers: will quickly pass the threshold of 0.0001 even when nowhere near the actual answer
+Very large numbers: not enough precision
