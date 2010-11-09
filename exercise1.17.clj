@@ -1,6 +1,4 @@
 ; Exercise 1.17
-;
-; 
 
 (defn mult [a b]
   (println a b)
@@ -17,7 +15,7 @@
 ; (+ 2 4)
 ; 6
     
-(defn fast-mul [a b]
+(defn fast-mult [a b]
   (loop [bl b sum 0]
     (println a bl)
     (if (zero? bl)
