@@ -1,0 +1,33 @@
+(define (square x) (* x x))
+
+; approach 1: the usual approach
+(define
+  (sum_of_sq_of_2_larger_b x y z)
+  (if (= (max x y) x)
+    (+ (square x) (square (max y z)))
+    (+ (square y) (square (max x z)))
+  )
+)
+
+(sum_of_sq_of_2_larger_b 1 2 3)
+=> 13
+(sum_of_sq_of_2_larger_b 4 8 2)
+=> 80
+(sum_of_sq_of_2_larger_b 2 3 2)
+=> 13
+
+; approach 2: sum of squares of all 3 numbers minues sum of square of smallest number
+(define
+  (sum_of_sq_of_2_larger_a x y z)
+  (-
+    (+ (square x) (square y) (square z))
+    (square (min x y z))
+  )
+)
+
+(sum_of_sq_of_2_larger_a 1 2 3)
+=> 13
+(sum_of_sq_of_2_larger_a 4 8 2)
+=> 80
+(sum_of_sq_of_2_larger_a 2 3 2)
+=> 13
