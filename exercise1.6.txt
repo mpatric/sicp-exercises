@@ -1,10 +1,40 @@
 Exercise 1.6
 
+Scheme:
+
+(define (sqrt-iter guess x)
+  (display guess)(newline)
+  (if (good-enough? guess x)
+    guess
+    (sqrt-iter (improve guess x) x)
+  )
+)
+
+(define (improve guess x)
+  (average guess (/ x guess))
+)
+
+(define (average x y)
+  (/ (+ x y) 2)
+)
+
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001)
+)
+
+(define (square x) (* x x))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x)
+)
+
+Clojure:
+
 (defn square[x] (* x x))
 (defn abs[x] (if (< x 0.0) (- 0 x) x))
 (defn average [x y] (/ (+ x y) 2))
 
-(defn sqrt[x]  
+(defn sqrt[x]
   (defn improve [guess x] (average guess (/ x guess)))
   (defn good-enough? [guess x] (< (abs (- (square guess) x)) 0.001))
   (loop [guess 1.0]
@@ -12,7 +42,23 @@ Exercise 1.6
       guess
       (recur (improve guess x)))))
 
+
 Answer:
 
-Very small numbers: will quickly pass the threshold of 0.0001 even when nowhere near the actual answer
-Very large numbers: not enough precision
+When using new-if:
+
+(define (new-if predicate then-clause else-clause)
+  (cond
+    (predicate then-clause)
+    (else else-clause)
+  )
+)
+
+(define (sqrt-iter guess x)
+  (new-if (good-enough? guess x)
+    guess
+    (sqrt-iter (improve guess x) x)
+  )
+)
+
+Unlike if, new-if uses applicative order evaluation (Scheme is an applicative order language), so it will evaluate the then-clause and the else-clause, which means we'll never break out of the recursion and get stuck in an infinite loop (scheme will raise a 'maximum recursion depth exceeded' error)

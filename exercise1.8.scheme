@@ -1,0 +1,56 @@
+(define (cubert x)
+  (cubert-iter 0.0 1.0 x)
+)
+
+(define (cubert-iter prev-guess current-guess x)
+  (display current-guess)(newline)
+  (if (good-enough? prev-guess current-guess x)
+    current-guess
+    (cubert-iter current-guess (improve-cubert-guess current-guess x) x)
+  )
+)
+
+(define (improve-cubert-guess guess x)
+  (/ (+ (/ x (* guess guess)) (* 2 guess)) 3)
+)
+
+; use the same good-enough? procedure as sqrt
+(define (good-enough? prev-guess current-guess x)
+  (<
+    (/ (abs (- current-guess prev-guess)) current-guess)
+    0.001
+  )
+)
+
+; (cubert 1) -> 1.
+; (cubert (* 4 4 4)) -> 4.000000000076121
+; (cubert (* 7 7 7)) -> 7.000001795382107
+; (cubert 1000) -> 10.000000145265767
+; (cubert (* .1 .1 .1)) -> .10000000198565878
+; (cubert 0.0001) -> .04641588857275245
+
+; note: this implementation only works for positive numbers
+; to work with negative, we would need to store the sign of the operand, then calculate using the abs of that value, then re-apply the sign
+
+; Using locally scoped procedures:
+; note: we don't need to pass x into the nested procedures now as it's in scope for them
+
+(define (cubert x)
+  (define (cubert-iter prev-guess current-guess)
+    (display current-guess)(newline)
+    (if (good-enough? prev-guess current-guess)
+      current-guess
+      (cubert-iter current-guess (improve current-guess))
+    )
+  )
+  (define (good-enough? prev-guess current-guess)
+    (<
+      (/ (abs (- current-guess prev-guess)) current-guess)
+      0.001
+    )
+  )
+  (define (improve guess)
+    (/ (+ (/ x (* guess guess)) (* 2 guess)) 3)
+  )
+  (cubert-iter 0.0 1.0)
+)

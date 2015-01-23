@@ -1,0 +1,41 @@
+; Very small numbers: will quickly pass the threshold of 0.0001 even when nowhere near the actual answer
+; Example:
+; (sqrt 0.0001) -> 0.03230844833048122 instead of 0.01
+
+; Very large numbers: not enough precision
+; Example:
+; (sqrt 10000000000000) never terminates as machine cannot compute the difference between two subsequent guesses to enough precision, so it will never be less than 0.001 (our termination condition)
+
+; Improvements to terminate when the difference between subsequent guesses is smaller than a specified fraction of the guess:
+
+(define (good-enough? guess x)
+  (<
+    (/ (abs (- guess (improve guess x))) guess)
+    0.001
+  )
+)
+
+; now:
+; (sqrt 0.0001) -> 1.0000714038711746e-2 (i.e. 0.010000714038711746)
+
+; the only downside of this approach is we're calling the improve procedure twice
+; this can be improved by passing the previous guess around:
+
+(define (good-enough? prev-guess current-guess)
+  (<
+    (/ (abs (- current-guess prev-guess)) current-guess)
+    0.001
+  )
+)
+
+(define (sqrt-iter prev-guess current-guess x)
+  (display current-guess)(newline)
+  (if (good-enough? prev-guess current-guess)
+    current-guess
+    (sqrt-iter current-guess (improve current-guess x) x)
+  )
+)
+
+(define (sqrt x)
+  (sqrt-iter 0.0 1.0 x)
+)
