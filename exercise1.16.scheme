@@ -1,0 +1,40 @@
+(define (display-all . args)
+  (display args)
+)
+
+(define (even? n)
+  (= (remainder n 2) 0)
+)
+
+(define (square n)
+  (* n n)
+)
+
+; recursive:
+;
+; if n is even: b^n = (b ^ (n / 2)) ^ 2
+; if n is odd:  b^n = b * (b ^ (n - 1))
+(define (fast-expt b n)
+  (display-all b n)(newline)
+  (cond
+    ((= n 0) 1)
+    ((even? n) (square (fast-expt b (/ n 2))))
+    (else (* b (fast-expt b (- n 1))))
+  )
+)
+
+; iterative
+;
+; if n is even: b^n = ((b^2) ^ (n/2))
+; if n is odd:  b^n = b * (b ^ (n - 1))
+(define (fast-expt2 b n)
+  (define (iter b n a)
+    (display-all b n a)(newline)
+    (cond
+      ((= n 0) a)
+      ((even? n) (iter (square b) (/ n 2) a))
+      (else (iter b (- n 1) (* a b)))
+    )
+  )
+  (iter b n 1)
+)
