@@ -27,20 +27,3 @@
     (else (+ x (mult x (- y 1))))
   )
 )
-
-; iterative
-;
-; if y is even: x*y = (double(x)) * (halve(y))
-; if y is odd:  x*y = x + (x * (y - 1))
-
-(define (mult2 x y)
-  (define (iter x y a)
-    (display-all x y a)(newline)
-    (cond
-      ((= y 0) a)
-      ((even? y) (iter (double x) (halve y) a))
-      (else (iter x (- y 1) (+ a x)))
-    )
-  )
-  (iter x y 0)
-)
