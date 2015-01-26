@@ -1,0 +1,50 @@
+(define (smallest-divisor n)
+  (find-divisor n 2)
+)
+
+(define (find-divisor n test-divisor)
+;  (display-all n test-divisor)
+  (cond
+    ((> (square test-divisor) n) n)
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (next test-divisor)))
+  )
+)
+
+(define (next test-divisor)
+  (if (= test-divisor 2)
+    3
+    (+ test-divisor 2)
+  )
+)
+
+(define (divides? a b)
+  (= (remainder b a) 0)
+)
+
+(define (prime? n)
+  (= n (smallest-divisor n))
+)
+
+; (search-for-primes 1000000000000 3)
+; 1000000000039 *** .8300000000000125
+; 1000000000061 *** .8299999999999983
+; 1000000000063 *** .9399999999999977
+
+; (search-for-primes 10000000000000 3)
+; 10000000000037 *** 2.7700000000000102
+; 10000000000051 *** 2.7700000000000102
+; 10000000000099 *** 2.7900000000000063
+
+; (search-for-primes 100000000000000 3)
+; 100000000000031 *** 8.75
+; 100000000000067 *** 8.689999999999998
+; 100000000000097 *** 8.460000000000008
+
+; Are these twice the speed of before (i.e. 100% faster)?
+; 1.37 / 0.83 = 1.65 - NO, only 65% faster
+; 4.39 / 2.77 = 1.58 - NO, only 58% faster
+; 13.86 / 8.75 = 1.58 - NO, only 58% faster
+
+; Why?
+; Because of the extra processing in the next procedure?

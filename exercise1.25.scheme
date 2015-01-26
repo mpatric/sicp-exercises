@@ -1,0 +1,50 @@
+; Fermat's Little Theorem: If n is a prime number and a is any positive integer less than n, then a raised to the nth power is congruent to a modulo n.
+; in other words: ((a ^ n) mod n) = (a mod n) for n is prime and 0 < a < n
+; try it:
+; n = 13, a = 12: ((a ^ n) mod n) = ((12 ** 13) % 13) = 12 AND (a mod n) = (12 % 13) = 2 -> 12 == 12
+; n = 13, a = 3: ((a ^ n) mod n) = ((3 ** 13) % 13) = 3 AND (a mod n) = (3 % 13) = 3 -> 3 == 3
+; n = 14, a = 12: ((a ^ n) mod n) = ((12 ** 14) % 14) = 4 AND (a mod n) = (12 % 14) = 12 -> 4 != 12
+; n = 14, a = 3: ((a ^ n) mod n) = ((3 ** 14) % 14) = 9 AND (a mod n) = (3 % 14) = 3 -> 9 != 3
+; etc.
+
+; utils
+
+(define (display-all . args)
+  (display args)
+)
+
+; original
+
+(define (expmod base exp m)
+  (display-all base exp m)(newline)
+  (cond
+    ((= exp 0) 1)
+    ((even? exp) (remainder (square (expmod base (/ exp 2) m)) m))
+    (else (remainder (* base (expmod base (- exp 1) m)) m))
+  )
+)
+
+; Alyssa P Hacker's proposal
+
+(define (expmod2 base exp m)
+  (remainder (fast-expt base exp) m)
+)
+
+(define (even? n)
+  (= (remainder n 2) 0)
+)
+
+(define (square n)
+  (* n n)
+)
+
+(define (fast-expt b n)
+  (display-all b n)(newline)
+  (cond
+    ((= n 0) 1)
+    ((even? n) (square (fast-expt b (/ n 2))))
+    (else (* b (fast-expt b (- n 1))))
+  )
+)
+
+; this produces equivalent results, but with very big intermediate numbers - we can avoid these with the original approach

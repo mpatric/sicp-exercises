@@ -9,3 +9,5 @@
     (report-prime)))
 (defn (report-prime)
   (println " *** "))
+
+; incomplete..

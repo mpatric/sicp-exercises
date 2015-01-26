@@ -1,0 +1,77 @@
+(define (timed-prime-test n)
+  (start-prime-test n (runtime))
+)
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+    (report-prime n (- (runtime) start-time))
+    #f
+  )
+)
+
+(define (report-prime n elapsed-time)
+  (newline)
+  (display n)
+  (display " *** ")
+  (display elapsed-time)
+)
+
+; search for primes:
+
+(define (display-all . args)
+  (display args)
+  (newline)
+)
+
+(define (search-for-primes start count)
+  (if (even? start)
+    (search-for-primes (+ 1 start) count)
+    (if (> count 0)
+      (if (timed-prime-test start)
+        (search-for-primes (+ start 2) (- count 1))
+        (search-for-primes (+ start 2) count)
+      )
+    )
+  )
+)
+
+; (search-for-primes 1000 3)
+; 1009 *** 0.
+; 1013 *** 0.
+; 1019 *** 0.
+
+; (search-for-primes 10000 3)
+; 10007 *** 0.
+; 10009 *** 0.
+; 10037 *** 0.
+
+; (search-for-primes 100000 3)
+; 100003 *** 0.
+; 100019 *** 0.
+; 100043 *** 0.
+
+; (search-for-primes 1000000 3)
+; 1000003 *** 1.0000000000000009e-2
+; 1000033 *** 0.
+; 1000037 *** 0.
+
+; Try much bigger numbers as the timings above are too small:
+
+; (search-for-primes 1000000000000 3)
+; 1000000000039 *** 1.3699999999999992
+; 1000000000061 *** 1.4200000000000017
+; 1000000000063 *** 1.3999999999999986
+
+; (search-for-primes 10000000000000 3)
+; 10000000000037 *** 4.390000000000001
+; 10000000000051 *** 4.559999999999999
+; 10000000000099 *** 4.629999999999999
+
+; (search-for-primes 100000000000000 3)
+; 100000000000031 *** 13.86
+; 100000000000067 *** 14.369999999999997
+; 100000000000097 *** 14.939999999999998
+
+; does processing time increase by SQRT(10) (which is ~3.16) for each zero we add to n?
+; 4.39 / 1.37 = 3.20 YES
+; 13.86 / 4.39 = 3.157175399 YES

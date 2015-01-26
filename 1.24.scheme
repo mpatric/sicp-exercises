@@ -1,0 +1,86 @@
+; fermat test:
+
+(define (expmod base exp m)
+  (cond
+    ((= exp 0) 1)
+    ((even? exp) (remainder (square (expmod base (/ exp 2) m)) m))
+    (else (remainder (* base (expmod base (- exp 1) m)) m))
+  )
+)
+
+(define (even? n)
+  (= (remainder n 2) 0)
+)
+
+(define (square x) (* x x))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a)
+  )
+  (try-it (+ 1 (random (- n 1))))
+)
+
+(define (fast-prime? n times)
+  (cond
+    ((= times 0) true)
+    ((fermat-test n) (fast-prime? n (- times 1)))
+    (else false)
+  )
+)
+
+; timed-prime-test
+
+(define (timed-prime-test n)
+  (start-prime-test n (runtime))
+)
+
+(define (start-prime-test n start-time)
+  (if (fast-prime? n 100)
+    (report-prime n (- (runtime) start-time))
+    #f
+  )
+)
+
+(define (report-prime n elapsed-time)
+  (newline)
+  (display n)
+  (display " *** ")
+  (display elapsed-time)
+)
+
+; search for primes:
+
+(define (display-all . args)
+  (display args)
+  (newline)
+)
+
+(define (search-for-primes start count)
+  (if (even? start)
+    (search-for-primes (+ 1 start) count)
+    (if (> count 0)
+      (if (timed-prime-test start)
+        (search-for-primes (+ start 2) (- count 1))
+        (search-for-primes (+ start 2) count)
+      )
+    )
+  )
+)
+
+; (search-for-primes 1000000000000 3)
+; 1000000000039 *** 1.0000000000019327e-2
+; 1000000000061 *** .01999999999998181
+; 1000000000063 *** 1.0000000000019327e-2
+
+; (search-for-primes 10000000000000 3)
+; 10000000000037 *** .01999999999998181
+; 10000000000051 *** 1.0000000000019327e-2
+; 10000000000099 *** 9.999999999990905e-3
+
+; (search-for-primes 100000000000000 3)
+; 100000000000031 *** 2.0000000000010232e-2
+; 100000000000067 *** 2.0000000000010232e-2
+; 100000000000097 *** 9.999999999990905e-3
+
+; grows very slowly (log n) - hard to measure accurately due to precision of clock
