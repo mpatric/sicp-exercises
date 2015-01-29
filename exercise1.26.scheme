@@ -1,0 +1,32 @@
+; Original code:
+
+(define (expmod base exp m)
+  (cond
+    ((= exp 0) 1)
+    ((even? exp) (remainder (square (expmod base (/ exp 2) m)) m))
+    (else (remainder (* base (expmod base (- exp 1) m)) m))
+  )
+)
+
+; Louis Reasoner's code:
+
+(define (expmod base exp m)
+  (cond
+    ((= exp 0) 1)
+    ((even? exp) (remainder (* (expmod base (/ exp 2) m) (expmod base (/ exp 2) m)) m))
+    (else (remainder (* base (expmod base (- exp 1) m)) m))
+  )
+)
+
+; the 5th line of each piece of code is difference; differences are:
+
+; Original code:
+(square (expmod base (/ exp 2) m))
+
+; Louis Reasoner's code:
+(* (expmod base (/ exp 2) m) (expmod base (/ exp 2) m))
+
+; the original code uses tail recursion, whilst Louis' code uses tree recursion
+;
+; execution of Louis code grows exponentially with the depth of the tree, d i.e: O(2^d), and the depth of the tree is O(log2(n))
+; so, overall, execution time is O(2^log2(n)), or just O(n)

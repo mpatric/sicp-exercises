@@ -1,0 +1,98 @@
+; common:
+
+(define (display-all . args)
+  (display args)
+  (newline)
+)
+
+; prime:
+
+(define (smallest-divisor n)
+  (find-divisor n 2)
+)
+
+(define (find-divisor n test-divisor)
+  ; (display-all n test-divisor)
+  (cond
+    ((> (square test-divisor) n) n)
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (+ test-divisor 1)))
+  )
+)
+
+(define (divides? a b)
+  (= (remainder b a) 0)
+)
+
+(define (prime? n)
+  (= n (smallest-divisor n))
+)
+
+; fermat test:
+
+(define (expmod base exp m)
+  (cond
+    ((= exp 0) 1)
+    ((even? exp) (remainder (square (expmod base (/ exp 2) m)) m))
+    (else (remainder (* base (expmod base (- exp 1) m)) m))
+  )
+)
+
+(define (even? n)
+  (= (remainder n 2) 0)
+)
+
+(define (square x) (* x x))
+
+(define (fermat-test-all n)
+  (define (iter a)
+    (display-all n a)
+    (cond
+      ((= a n) #t) ; we've checked all the numbers from 1 to n
+      ((= (expmod a n n) a) (iter (+ a 1))) ; it's likely to be a prime when checked with fermat against a, try a + 1
+      (else #f) ; it's not a prime
+    )
+  )
+  (iter 1)
+)
+
+(define (validate-fermat-test n)
+  (define (compare n1 n2)
+    (if (equal? n1 n2)
+      (display "OK")
+      (display "FOOLED")
+    )
+    (newline)
+  )
+  (compare (fermat-test-all n) (prime? n))
+)
+
+; Check Carmichael numbers:
+;
+; (validate-fermat-test 561)
+;   FOOLED
+; (validate-fermat-test 1105)
+;   FOOLED
+; (validate-fermat-test 1729)
+;   FOOLED
+; (validate-fermat-test 2465)
+;   FOOLED
+; (validate-fermat-test 2821)
+;   FOOLED
+; (validate-fermat-test 6601)
+;   FOOLED
+
+; Check some other number:
+;
+; (validate-fermat-test 1)
+;   OK
+; (validate-fermat-test 2)
+;   OK
+; (validate-fermat-test 10)
+;   OK
+; (validate-fermat-test 562)
+;   OK
+
+; And some primes (although it's for non-primes that we get false positives):
+; (validate-fermat-test 13)
+;   OK
